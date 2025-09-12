@@ -55,7 +55,7 @@ Before running the scripts, you need to ensure you have the following command-li
 
 1.  **Clone the repository:**
     ```sh
-    git clone <your-repository-url>
+    git clone https://github.com/ACH4Q/Arachnida
     cd arachnida
     ```
 
