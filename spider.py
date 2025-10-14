@@ -16,6 +16,13 @@ def main():
     args = parser.parse_args()
     print(f"Starting scrape on {args.URL}")
     os.makedirs(args.path, exist_ok=True)
+try :
+    print(f"Requesting web {args.URL}")
+    reponse = requests.get(args.URL , timeout=10)
+    requests.ReadTimeout
+except:
+    print("Error in fetching request")
+
 
 
 if __name__ == "__main__":
