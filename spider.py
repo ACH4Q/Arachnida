@@ -1,19 +1,23 @@
+# spider.py
 import argparse
 import os
 import requests
 
 def main():
-        
-        images = ['.jpg','.jpeg','.gif','.bmp','.png']
-        parser = argparse.ArgumentParser(
-                prog="spider",
-                description="spider is a web scarper programme",
-                epilog="thank you for using my programme"
-        )
-        parser.add_argument('-r', help="add recursive scan of the target")
-        parser.add_argument('-l', help="indicates the maximum depth level of the recursive download")
-        parser.add_argument('-p',default='./data/' , help="insert the path where the downloaded files will be stored")
+    parser = argparse.ArgumentParser(description="Scrape images from a website.")
+    parser.add_argument('URL', help='The URL of the website to scrape.')
+    parser.add_argument('-r', '--recursive', action='store_true',
+                        help='Recursively download images.')
+    parser.add_argument('-l', '--level', type=int, default=5,
+                        help='Maximum recursion depth (default: 5).')
+    parser.add_argument('-p', '--path', default='./data/',
+                        help='Path to save downloaded files (default: ./data/).')
 
-        request = requests.request(
-                data=""
-        )
+    args = parser.parse_args()
+    print(f"Starting scrape on {args.URL}")
+    os.makedirs(args.path, exist_ok=True)
+
+
+if __name__ == "__main__":
+    main()
+    print("Spider finished.")
