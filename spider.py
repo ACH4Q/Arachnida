@@ -33,7 +33,7 @@ def main():
             continue
         
         if src.lower().endswith(images_ext) :
-            print (f"image was found")
+           print(f"  [+] Found image: {src}")
 
 
 if __name__ == "__main__":
