@@ -1,6 +1,7 @@
 import argparse
 import os
 import requests
+from bs4 import BeautifulSoup
 
 def main():
     parser = argparse.ArgumentParser(description="Scrape images from a website")
@@ -15,13 +16,25 @@ def main():
     args = parser.parse_args()
     print(f"Starting scrape on {args.URL}")
     os.makedirs(args.path, exist_ok=True)
-try :
-    print(f"Requesting web {args.URL}")
-    reponse = requests.get(args.URL , timeout=10)
-    reponse.raise_for_status()
-except requests.RequestException as e:
-    print("Error in fetching request : {e}")
+    try :
+        print(f"Requesting web {args.URL}")
+        reponse = requests.get(args.URL , timeout=10)
+        reponse.raise_for_status()
+    except requests.RequestException as e:
+        print(f"Error in fetching request : {e}")
 
+    print("fetching html file request")
+    soup = BeautifulSoup(reponse.content,'html.parser')
+    images_tags = soup.find_all('img')
+    images_ext = ('.gif', '.jpeg', '.jpg', '.png', '.bmp')
+    for im_tag in images_tags :
+        src = im_tag.get(src)
+        if not src :
+            continue
+        
+        # if :
+        #     src.lower(endswith(images_ext))
+        print (f"image was found")
 
 
 if __name__ == "__main__":
