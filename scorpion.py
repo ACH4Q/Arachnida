@@ -16,7 +16,16 @@ def analyze_image_metadata(filepath):
         exif_data = image._getexif()
         if not exif_data:
             print("No EXIF metadata found")
-            return 
+            return
+        print("EXIF metadata")
+        for tag_id, value in exif_data.items():
+             tag_name = TAGS.get(tag_id,tag_id)
+
+        if isinstance(value,bytes):
+             value = value.decode('utf-8',errors='ignore')
+        print(f"{tag_name} : {value}")
+    except Exception as e:
+            print(f"An error occurred while processing" '{filepath}' : {e})
     except FileNotFoundError:
             print(f"Error : the file'{filepath}' was not found")
     
