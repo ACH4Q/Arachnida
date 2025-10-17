@@ -12,7 +12,11 @@ def analyze_image_metadata(filepath):
         print(f"File Size: {file_stat.st_size / 1024:.2f} KB")
         print(f"Last Modified: {datetime.fromtimestamp(file_stat.st_mtime)}")
         print("\\n")
-        
+        image = Image.open(filepath)
+        exif_data = image._getexif()
+        if not exif_data:
+            print("No EXIF metadata found")
+            return 
     except FileNotFoundError:
             print(f"Error : the file'{filepath}' was not found")
     
