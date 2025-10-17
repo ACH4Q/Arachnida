@@ -5,7 +5,16 @@ from PIL import Image
 
 def analyze_image_metadata(filepath):
     print("-" * 30)
-    print(f"analyzing : {filepath}") 
+    print(f"analyzing : {filepath}")
+
+    try:
+        file_stat = os.stat(filepath)
+        print(f"File Size: {file_stat.st_size / 1024:.2f} KB")
+        print(f"Last Modified: {datetime.fromtimestamp(file_stat.st_mtime)}")
+        print("\\n")
+        
+    except FileNotFoundError:
+            print(f"Error : the file'{filepath}' was not found")
     
 def main():
     parser = argparse.ArgumentParser(
