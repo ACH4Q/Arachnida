@@ -47,8 +47,8 @@ This project explicitly avoids external scraping libraries like `Scrapy` or `wge
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/arachnida.git
-    cd arachnida
+    git clone https://github.com/ACH4Q/Arachnida.git
+    cd Arachnida
     ```
 
 2.  **Install the required Python libraries:**
