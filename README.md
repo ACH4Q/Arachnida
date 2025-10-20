@@ -1,131 +1,130 @@
 # Arachnida - Web Scraper & Metadata Analyzer
 
-Arachnida is a cybersecurity project focused on web scraping and metadata analysis, implemented entirely in Bash scripting. It consists of two main tools: `spider`, a web crawler that downloads images from a website, and `scorpion`, a tool to extract and display metadata from those images.
-
-This project was completed following the constraints of the "Cybersecurity Piscine," which prohibits the use of high-level scraping libraries like `wget` or `Scrapy` to ensure a fundamental understanding of the underlying processes.
+Arachnida is a cybersecurity project focused on the fundamentals of web scraping and file metadata analysis. It consists of two Python command-line tools: `spider`, a recursive image scraper, and `scorpion`, a metadata extractor. This project was developed to understand how data can be retrieved from the web and how seemingly hidden information can be extracted from files.
 
 ## Table of Contents
 
+- [Project Description](#project-description)
 - [Features](#features)
-- [Prerequisites](#prerequisites)
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Spider: The Image Scraper](#spider-the-image-scraper)
   - [Scorpion: The Metadata Analyzer](#scorpion-the-metadata-analyzer)
-- [Project Structure](#project-structure)
+- [How It Works](#how-it-works)
+
+## Project Description
+
+This project is split into two distinct but related parts:
+
+1.  **Spider (`spider.py`)**: A powerful command-line tool that crawls a given website and recursively downloads images. It is designed to be respectful of bandwidth and allows for fine-grained control over recursion depth and download location.
+
+2.  **Scorpion (`scorpion.py`)**: A utility to analyze the downloaded files (or any other images). It extracts and displays valuable metadata, including EXIF data from photographs, which can reveal information such as camera model, date, time, and even GPS coordinates.
+
+This project explicitly avoids external scraping libraries like `Scrapy` or `wget` to ensure the core logic of HTTP requests, HTML parsing, and recursion is built from the ground up.
 
 ## Features
 
-### `spider.sh`
-*   **Recursive Scraping**: Downloads images from a target URL and can recursively crawl linked pages.
-*   **Depth Control**: Allows specifying the maximum recursion depth to prevent infinite loops and control the scope of the crawl.
-*   **Custom Save Location**: Users can define a specific directory to save downloaded images.
-*   **Supported Image Types**: Downloads images with `.jpg`, `.jpeg`, `.png`, `.gif`, and `.bmp` extensions.
+### Spider
+- **Recursive Scraping**: Can crawl a website by following links to discover and download more images.
+- **Depth Control**: Allows users to specify the maximum recursion depth to prevent infinite loops and control the scope of the crawl.
+- **Image Filtering**: Downloads only common image formats (`.jpg`, `.jpeg`, `.png`, `.gif`, `.bmp`).
+- **Custom Save Location**: Users can specify a directory where all downloaded images will be saved.
+- **Robust Error Handling**: Gracefully handles network errors, bad URLs, and HTTP error codes.
 
-### `scorpion.sh`
-*   **Metadata Extraction**: Parses and displays EXIF and other metadata from image files.
-*   **Batch Processing**: Can analyze multiple image files in a single command.
-*   **Clear Output**: Presents metadata in a human-readable format for each file.
+### Scorpion
+- **Metadata Extraction**: Reads and displays basic file information (size, modification date).
+- **EXIF Data Parsing**: Extracts and prints all available EXIF (Exchangeable Image File Format) data from JPEG images.
+- **Human-Readable Output**: Converts numerical EXIF tag IDs into human-readable names (e.g., `271` -> `Make`).
+- **Multi-File Support**: Can analyze multiple image files in a single command.
 
-## Prerequisites
+## Requirements
 
-Before running the scripts, you need to ensure you have the following command-line tools installed. Most are standard on modern Linux and macOS systems.
-
-*   `bash`: The shell to run the scripts.
-*   `curl`: Used for making HTTP requests to download web pages and images.
-*   `grep`, `sed`, `awk`: Standard text-processing utilities used for parsing HTML content.
-*   `exiftool`: The primary dependency for `scorpion.sh`. It is a powerful tool for reading and writing image metadata.
-
-**Installing `exiftool`:**
-
-*   **On Debian/Ubuntu:**
-    ```sh
-    sudo apt-get update && sudo apt-get install libimage-exiftool-perl
-    ```
-*   **On Fedora/CentOS:**
-    ```sh
-    sudo dnf install perl-Image-ExifTool
-    ```
-*   **On macOS (using Homebrew):**
-    ```sh
-    brew install exiftool
-    ```
+- Python 3.6+
+- `pip` (Python package installer)
 
 ## Installation
 
 1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/ACH4Q/Arachnida
+    ```bash
+    git clone https://github.com/your-username/arachnida.git
     cd arachnida
     ```
 
-2.  **Make the scripts executable:**
-    This step grants the necessary permissions to run the scripts from your terminal.
-    ```sh
-    chmod +x spider.sh scorpion.sh
+2.  **Install the required Python libraries:**
+    This project depends on `requests`, `BeautifulSoup4`, and `Pillow`. You can install them using the following command:
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *(Note: You will need to create a `requirements.txt` file with the following content:)*
+    ```
+    requests
+    beautifulsoup4
+    Pillow
     ```
 
 ## Usage
 
+Both tools are run from the command line.
+
 ### Spider: The Image Scraper
 
-The `spider.sh` script downloads images from a given URL.
+The `spider.py` script downloads images from a given URL.
 
 **Syntax:**
-```sh
-./spider.sh [-r] [-l DEPTH] [-p PATH] URL
+```bash
+python spider.py [-r] [-l DEPTH] [-p PATH] URL
 ```
 
-**Options:**
-*   `-r`: Enable recursive downloading. The script will follow links on the page and download images from them.
-*   `-l [DEPTH]`: (Requires `-r`) Set the maximum recursion depth. Defaults to `5`.
-*   `-p [PATH]`: Specify the directory where images will be saved. Defaults to `./data/`.
-*   `URL`: The full URL of the website you want to scrape.
+**Arguments:**
+- `URL`: The full URL of the website you want to scrape.
+- `-r`, `--recursive`: (Optional) Enable recursive downloading. The spider will follow links on the same domain.
+- `-l DEPTH`, `--level DEPTH`: (Optional) Set the maximum recursion depth. Defaults to `5`.
+- `-p PATH`, `--path PATH`: (Optional) Specify the directory to save images. Defaults to `./data/`.
 
 **Examples:**
 
-1.  **Download all images from a single page:**
-    ```sh
-    ./spider.sh https://example.com
-    ```
-    *(Images will be saved in the `./data/` directory.)*
+- **Download all images from a single page:**
+  ```bash
+  python spider.py http://books.toscrape.com
+  ```
 
-2.  **Recursively download images up to a depth of 2:**
-    ```sh
-    ./spider.sh -r -l 2 https://example.com
-    ```
-
-3.  **Recursively download images and save them to a custom folder:**
-    ```sh
-    ./spider.sh -r -p ./my-scraped-images https://example.com
-    ```
+- **Recursively download images up to a depth of 2, saving them in a folder named `scraped_images`:**
+  ```bash
+  python spider.py -r -l 2 -p scraped_images/ http://books.toscrape.com
+  ```
 
 ### Scorpion: The Metadata Analyzer
 
-The `scorpion.sh` script analyzes the downloaded images and displays their metadata.
+The `scorpion.py` script displays metadata for one or more image files.
 
 **Syntax:**
-```sh
-./scorpion.sh [FILE1] [FILE2] ...
+```bash
+python scorpion.py FILE [FILE ...]
 ```
+
+**Arguments:**
+- `FILE`: One or more paths to the image files you want to analyze.
 
 **Example:**
 
-1.  **Analyze all `.jpg` files in the default `data` directory:**
-    ```sh
-    ./scorpion.sh data/*.jpg
-    ```
+- **Analyze a single image downloaded by the spider:**
+  ```bash
+  python scorpion.py data/cover.jpg
+  ```
 
-2.  **Analyze specific images:**
-    ```sh
-    ./scorpion.sh data/image1.png data/photo.jpeg
-    ```
+- **Analyze multiple images at once:**
+  ```bash
+  python scorpion.py data/image1.jpg data/image2.png
+  ```
 
-## Project Structure
+- **Analyze all `.jpg` files in a directory:**
+  ```bash
+  python scorpion.py data/*.jpg
+  ```
 
-```
-.
-├── spider.sh         # The web scraping script
-├── scorpion.sh       # The metadata analysis script
-├── data/             # Default directory for downloaded images
-└── README.md         # This file
+## How It Works
+
+- **Spider** uses the `requests` library to fetch the HTML content of a webpage. It then uses `BeautifulSoup` to parse the HTML, finding all `<img>` tags to identify image URLs and `<a>` tags for recursive crawling. It intelligently handles both relative and absolute URLs.
+
+- **Scorpion** uses the `Pillow` (PIL Fork) library to open image files. It leverages `os.stat` to get file system metadata and `Pillow`'s built-in methods to extract the EXIF dictionary from images, which it then formats for clear presentation.
